@@ -14,8 +14,9 @@ let crawl = async () => {
         // ----------------------- fetching data -------------------------------------
         let data = await page.evaluate(() => {
             const firms = [];
-
-            var time = "16.11.18" // <--------------- TODO: DATUM AUTOMATISCH 
+            var today = new Date()
+            var todayString = today.getDate() + "." + today.getMonth() + "." + today.getFullYear(); 
+            var time = todayString;
 
             let articles = document.querySelectorAll("#content > div.column.left_col > div.box.darkblue.content_list.news_list > div.content > table > tbody > tr");
 
