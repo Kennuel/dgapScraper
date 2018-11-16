@@ -1,75 +1,30 @@
 const puppeteer = require('puppeteer');
 
+const config = {
+    baseUrl : "https://dgap.de/"
+}
+
 let crawl = async () => {
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
-    var news = []
-    var start = "https://dgap.de/";
+    var news = [];
 
     var keepGoing = true;
     var firstSite = true;
 
     while (keepGoing) {
-        await page.goto(start);
-        // ----------------------- fetching data -------------------------------------
-        let data = await page.evaluate(() => {
-            const firms = [];
-            var today = new Date()
-            var todayString = today.getDate() + "." + today.getMonth() + "." + today.getFullYear(); 
-            var time = todayString;
-
-            let articles = document.querySelectorAll("#content > div.column.left_col > div.box.darkblue.content_list.news_list > div.content > table > tbody > tr");
-
-            for (articleIndex = 1; articleIndex <= articles.length; articleIndex++) {
-                let firm = {
-                    name: "",
-                    title: "",
-                    date: "",
-                    time: "",
-                    link: "",
-                    stop: false,
-                }
-
-                let infos = document.querySelector("#content > div.column.left_col > div.box.darkblue.content_list.news_list > div.content > table > tbody > tr:nth-child(" + articleIndex + ")> td.content_text > a > strong")
-
-                if (infos == null) {
-                    continue
-                }
-                let info = infos.innerText.split(" ");
-
-                if (!info[1].includes("DGAP-News")) {
-                    continue
-                }
-                firm.date = info[0]
-                if (info[0] != time) {
-                    firm.stop = true;
-                    firms.push(firm)
-                    break
-                }
-                firm.time = info[1].substring(0, 5);
-                firm.name = info[2]
-                for (infoIndex = 3; infoIndex < info.length; infoIndex++) {
-                    firm.name = firm.name + " " + info[infoIndex]
-                }
-                let link = document.querySelector("#content > div.column.left_col > div.box.darkblue.content_list.news_list > div.content > table > tbody > tr:nth-child(" + articleIndex + ") > td.content_text > a")
-                if (link != null) {
-                    firm.link = link.href;
-                }
-                firms.push(firm)
-            }
-
-            return { firms }
-        }); // ---------- end fetching data ----------------
+        await page.goto(config.baseUrl);
+        let data = await page.evaluate(fetchData);
 
         // ------- get titles ---------------
-        for (dataIndex = 0; dataIndex < data.firms.length; dataIndex++) {
-            if (data.firms[dataIndex].stop == true) {
+        for (dataIndex = 0; dataIndex < data.companies.length; dataIndex++) {
+            if (data.companies[dataIndex].stop == true) {
                 keepGoing = false
-                data.firms.pop()
+                data.companies.pop()
                 console.log("here: ")
                 break
             } else {
-                await page.goto(data.firms[dataIndex].link);
+                await page.goto(data.companies[dataIndex].link);
                 let title = await page.evaluate(() => {
                     let head = document.querySelector("#content > div.column.left_col_wide > div.column.left_col > div > div > h1")
                     var title = "";
@@ -83,7 +38,7 @@ let crawl = async () => {
                     }
                     return { title }
                 });
-                data.firms[dataIndex].title = title;
+                data.companies[dataIndex].title = title;
             }
             news.push(data)
         } //------- end get titles ---------------
@@ -91,8 +46,8 @@ let crawl = async () => {
         //------- switching sites ------------------
         if (firstSite) {
             console.log("first:")
-            await page.goto(start);
-            start = await page.evaluate(() => {
+            await page.goto(config.baseUrl);
+            config.baseUrl = await page.evaluate(() => {
                 let start1 = ""
                 let site = document.querySelector("#content > div.column.left_col > div.box.darkblue.content_list.news_list > div.bottom_link.list_paging > a")
                 if (site != null) {
@@ -102,10 +57,10 @@ let crawl = async () => {
                 }
                 return start1
             });
-            console.log(start)
+            console.log(config.baseUrl)
         } else {
-            await page.goto(start);
-            start = await page.evaluate(() => {
+            await page.goto(config.baseUrl);
+            config.baseUrl = await page.evaluate(() => {
                 console.log("second")
                 let start1 = ""
                 let s = document.querySelector("#content > div.column.left_col > div.box.darkblue.content_list.news_list > div.bottom_link.list_paging > div.list_next > a")
@@ -132,5 +87,51 @@ let crawl = async () => {
     browser.close();
 };
 
+let fetchData = () => {
+    const companies = []; 
+    var time = new Date().toLocaleDateString("de-DE");
+    const articleTableBody = document.querySelector("#content div.content_list.news_list table > tbody");
+    let articles = articleTableBody.querySelectorAll("tr");
+
+    for (let articleIndex = 1; articleIndex <= articles.length; articleIndex++) {
+        let company = {
+            name: "",
+            title: "",
+            date: "",
+            time: "",
+            link: "",
+            stop: false
+        }
+
+        let link = articleTableBody.querySelector("tr:nth-child(" + articleIndex + ") > td.content_text > a")
+        let infos = link.querySelector("strong")
+
+        if (infos == null) {
+            continue
+        }
+        let info = infos.innerText.split(" ");
+
+        if (!info[1].includes("DGAP-News")) {
+            continue
+        }
+        company.date = info[0]
+        if (info[0] != time) {
+            company.stop = true;
+            companies.push(company)
+            break
+        }
+        company.time = info[1].substring(0, 5);
+        company.name = info[2]
+        for (infoIndex = 3; infoIndex < info.length; infoIndex++) {
+            company.name = company.name + " " + info[infoIndex]
+        }
+        if (link != null) {
+            company.link = link.href;
+        }
+        companies.push(company)
+    }
+
+    return { companies }
+}
 crawl()
 
