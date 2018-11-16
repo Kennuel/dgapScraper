@@ -15,7 +15,7 @@ let crawl = async () => {
         let data = await page.evaluate(() => {
             const firms = [];
 
-            var time = "14.11.18" // <--------------- TODO: DATUM AUTOMATISCH 
+            var time = "16.11.18" // <--------------- TODO: DATUM AUTOMATISCH 
 
             let articles = document.querySelectorAll("#content > div.column.left_col > div.box.darkblue.content_list.news_list > div.content > table > tbody > tr");
 

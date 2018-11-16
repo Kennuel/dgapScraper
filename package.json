@@ -1,0 +1,25 @@
+{
+  "name": "dgapcrawler",
+  "version": "1.0.0",
+  "description": "Web Crawler for dgap",
+  "main": "dgapCrawler.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Kennuel/dgapCrawler.git"
+  },
+  "keywords": [
+    "WebCrawler"
+  ],
+  "author": "Kennuel",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Kennuel/dgapCrawler/issues"
+  },
+  "homepage": "https://github.com/Kennuel/dgapCrawler#readme",
+  "dependencies": {
+    "puppeteer": "^1.10.0"
+  }
+}
