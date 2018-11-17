@@ -5,7 +5,7 @@ const config = {
 }
 
 let crawl = async () => {
-    const browser = await puppeteer.launch({ headless: false });
+    const browser = await puppeteer.launch({ headless: false, devtools: true});
     const page = await browser.newPage();
     var news = [];
 
@@ -14,7 +14,7 @@ let crawl = async () => {
 
     while (keepGoing) {
         await page.goto(config.baseUrl);
-        let data = await page.evaluate(fetchData);
+        let data = await fetchData(page);
 
         // ------- get titles ---------------
         for (dataIndex = 0; dataIndex < data.companies.length; dataIndex++) {
@@ -87,51 +87,55 @@ let crawl = async () => {
     browser.close();
 };
 
-let fetchData = () => {
-    const companies = []; 
-    var time = new Date().toLocaleDateString("de-DE");
-    const articleTableBody = document.querySelector("#content div.content_list.news_list table > tbody");
-    let articles = articleTableBody.querySelectorAll("tr");
-
-    for (let articleIndex = 1; articleIndex <= articles.length; articleIndex++) {
-        let company = {
-            name: "",
-            title: "",
-            date: "",
-            time: "",
-            link: "",
-            stop: false
+fetchData = async function(page) {
+    console.log("Start fetch articles...");
+    return await page.evaluate(() => {
+        debugger;
+        const companies = []; 
+        var time = new Date().toLocaleDateString("de-DE");
+        const articleTableBody = document.querySelector("#content div.content_list.news_list table > tbody");
+        let articles = articleTableBody.querySelectorAll("tr");
+        
+        for (let articleIndex = 1; articleIndex <= articles.length; articleIndex++) {
+            let company = {
+                name: "",
+                title: "",
+                date: "",
+                time: "",
+                link: "",
+                stop: false
+            }
+            
+            let link = articleTableBody.querySelector("tr:nth-child(" + articleIndex + ") > td.content_text > a")
+            let infos = link.querySelector("strong")
+            
+            if (infos == null) {
+                continue
+            }
+            let info = infos.innerText.split(" ");
+            
+            if (!info[1].includes("DGAP-News")) {
+                continue
+            }
+            company.date = info[0]
+            if (info[0] != time) {
+                company.stop = true;
+                companies.push(company)
+                break
+            }
+            company.time = info[1].substring(0, 5);
+            company.name = info[2]
+            for (infoIndex = 3; infoIndex < info.length; infoIndex++) {
+                company.name = company.name + " " + info[infoIndex]
+            }
+            if (link != null) {
+                company.link = link.href;
+            }
+            companies.push(company);
         }
-
-        let link = articleTableBody.querySelector("tr:nth-child(" + articleIndex + ") > td.content_text > a")
-        let infos = link.querySelector("strong")
-
-        if (infos == null) {
-            continue
-        }
-        let info = infos.innerText.split(" ");
-
-        if (!info[1].includes("DGAP-News")) {
-            continue
-        }
-        company.date = info[0]
-        if (info[0] != time) {
-            company.stop = true;
-            companies.push(company)
-            break
-        }
-        company.time = info[1].substring(0, 5);
-        company.name = info[2]
-        for (infoIndex = 3; infoIndex < info.length; infoIndex++) {
-            company.name = company.name + " " + info[infoIndex]
-        }
-        if (link != null) {
-            company.link = link.href;
-        }
-        companies.push(company)
-    }
-
-    return { companies }
+        return { companies };
+    });
 }
+
 crawl()
 
