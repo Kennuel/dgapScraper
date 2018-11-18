@@ -4,7 +4,7 @@ Further you need to build ArticleProcessor via maven with:
 
 ```mvn clean install```
 
-To build a docker image named as articleprocessor from the dockerfile inside of articleprocessor you need to run:
+To build a docker image from the root directory named as articleprocessor from the dockerfile inside of articleprocessor you need to run:
 
 ```docker build -t articleprocessor .\articleprocessor```
 
