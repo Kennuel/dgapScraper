@@ -14,27 +14,12 @@ let crawl = async () => {
 
     while (keepGoing) {
         await page.goto(config.baseUrl);
-        let data = await fetchCompanys(page);
-
-        // ------- get titles ---------------
-        for (dataIndex = 0; dataIndex < data.companies.length; dataIndex++) {
-            if (data.companies[dataIndex].stop == true) {
-                keepGoing = false
-                data.companies.pop()
-                console.log("here: ")
-                break
-            } else {
-                await page.goto(data.companies[dataIndex].link);
-                data.companies[dataIndex].title = await page.evaluate(() => {
-                    let headBaseSelector = ("#content > div.column.left_col_wide > div.column");
-                    let head = document.querySelector(headBaseSelector + ".left_col > div > div > h1") || document.querySelector(headBaseSelector + " > div > div > h1");
-                    let title = head.innerText;
-                    return { title }
-                });
-            }
-            news.push(data)
-        } //------- end get titles ---------------
-
+        let companies = await fetchCompanys(page);
+        let anyCompanyHasStopFlag = companies.find((company) => {
+            return company.stop;
+        });
+        keepGoing = !anyCompanyHasStopFlag; 
+        news = await retrieveTitleForLinks(companies, page, keepGoing);
         //------- switching sites ------------------
         await page.goto(config.baseUrl);
         config.baseUrl = await page.evaluate((firstSite) => {
@@ -53,7 +38,7 @@ let crawl = async () => {
 };
 
 fetchCompanys = async function(page) {
-    console.log("Start fetching articles...");
+    console.log("Start fetching articles from the next page...");
     return await page.evaluate(() => {
         // function declaration -  functions cannot be passed to page.evaluate without hack https://stackoverflow.com/a/52176714
         const isNews = function(infoParts) {
@@ -86,7 +71,6 @@ fetchCompanys = async function(page) {
             return company
         }
 
-        debugger;
         const companies = []; 
         const articleTableBody = document.querySelector("#content div.content_list.news_list table > tbody");
         let articles = articleTableBody.querySelectorAll("tr");
@@ -104,8 +88,28 @@ fetchCompanys = async function(page) {
                 }
             }
         }
-        return { companies };
+        return companies;
     });
+}
+
+retrieveTitleForLinks = async function(companies, currentPage) {
+    let news = [];
+    for (let i = 0; i < companies.length; i++) {
+        if (companies[i].stop) {
+            companies.pop();
+            break;
+        } else {
+            await currentPage.goto(companies[i].link);
+            companies[i].title = await currentPage.evaluate(() => {
+                let headBaseSelector = ("#content > div.column.left_col_wide > div.column");
+                let head = document.querySelector(headBaseSelector + ".left_col > div > div > h1") || document.querySelector(headBaseSelector + " > div > div > h1");
+                let title = head.innerText;
+                return { title }
+            });
+        }
+        news.push(companies)
+    }
+    return news;
 }
 
 writeNewsToFile = function(news) {
