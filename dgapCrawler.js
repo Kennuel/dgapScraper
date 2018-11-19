@@ -25,54 +25,26 @@ let crawl = async () => {
                 break
             } else {
                 await page.goto(data.companies[dataIndex].link);
-                let title = await page.evaluate(() => {
-                    let head = document.querySelector("#content > div.column.left_col_wide > div.column.left_col > div > div > h1")
-                    var title = "";
-                    if (head == null) {
-                        let headHelp = document.querySelector("#content > div.column.left_col_wide > div.column > div > div > h1")
-                        if (headHelp != null) {
-                            title = headHelp.innerText;
-                        }
-                    } else {
-                        title = head.innerText;
-                    }
+                data.companies[dataIndex].title = await page.evaluate(() => {
+                    let headBaseSelector = ("#content > div.column.left_col_wide > div.column");
+                    let head = document.querySelector(headBaseSelector + ".left_col > div > div > h1") || document.querySelector(headBaseSelector + " > div > div > h1");
+                    let title = head.innerText;
                     return { title }
                 });
-                data.companies[dataIndex].title = title;
             }
             news.push(data)
         } //------- end get titles ---------------
 
         //------- switching sites ------------------
-        if (firstSite) {
-            console.log("first:")
-            await page.goto(config.baseUrl);
-            config.baseUrl = await page.evaluate(() => {
-                let start1 = ""
-                let site = document.querySelector("#content > div.column.left_col > div.box.darkblue.content_list.news_list > div.bottom_link.list_paging > a")
-                if (site != null) {
-                    start1 = site.href;
-                } else {
-                    keepGoing = false;
-                }
-                return start1
-            });
-            console.log(config.baseUrl)
-        } else {
-            await page.goto(config.baseUrl);
-            config.baseUrl = await page.evaluate(() => {
-                console.log("second")
-                let start1 = ""
-                let s = document.querySelector("#content > div.column.left_col > div.box.darkblue.content_list.news_list > div.bottom_link.list_paging > div.list_next > a")
-                if (s != null) {
-                    start1 = s.href;
-                } else {
-                    keepGoing = false;
-                }
-                console.log(start1)
-                return start1
-            });
-        }//------- end switching sites ------------------
+        await page.goto(config.baseUrl);
+        config.baseUrl = await page.evaluate((firstSite) => {
+            let selectorLinkBase = "#content > div.column.left_col > div.box.darkblue.content_list.news_list > div.bottom_link.list_paging";
+            let site = firstSite ? document.querySelector(selectorLinkBase + " > a") : document.querySelector(selectorLinkBase + " > div.list_next > a");
+            if (site != null) {
+                return site.href;
+            }
+            keepGoing = false;
+        }, firstSite);
         firstSite = false;
     } // ----- END WHILE
 
@@ -138,7 +110,6 @@ fetchCompanys = async function(page) {
 
 writeNewsToFile = function(news) {
     var newsJson = JSON.stringify(news[0]);
-
     var fs = require('fs');
     fs.writeFile("news.json", newsJson, function (err) {
         if (err) throw err;
