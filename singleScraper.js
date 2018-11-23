@@ -9,21 +9,17 @@ let getSingleCompanyInfos = async () => {
     const page = await browser.newPage();
     await page.goto(config.baseUrl);
     let company = await fetchLatestCompany(page);
-    if(company != null) {
-        company.title = await retrieveTitleForCompany(company, page);
-        await page.goto(company.link);
-        company = await page.evaluate((company) => {
-            let headerNodes = document.querySelector("#content ul").querySelectorAll("li");
-            company.wkn = headerNodes[0].textContent.trim().substring(5);
-            company.isin = headerNodes[1].textContent.trim().substring(6);
-            company.articleText = document.querySelector("#content .break-word.news_main").textContent;
-            return company;
-        }, company);
-        writeCompanyToFile(company)
-        browser.close();
-    } else {
-        console.log("Most recent article is not a news article. Abort info scrapping.");
-    }
+    company.title = await retrieveTitleForCompany(company, page);
+    await page.goto(company.link);
+    company = await page.evaluate((company) => {
+        let headerNodes = document.querySelector("#content ul").querySelectorAll("li");
+        company.wkn = headerNodes[0].textContent.trim().substring(5);
+        company.isin = headerNodes[1].textContent.trim().substring(6);
+        company.articleText = document.querySelector("#content .break-word.news_main").textContent;
+        return company;
+    }, company);
+    writeCompanyToFile(company)
+    browser.close();
 
 };
 
