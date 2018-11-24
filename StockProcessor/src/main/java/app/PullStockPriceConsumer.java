@@ -8,12 +8,12 @@ import pl.zankowski.iextrading4j.client.IEXTradingClient;
 import pl.zankowski.iextrading4j.client.rest.request.stocks.QuoteRequestBuilder;
 
 @Component
-@EnableKafka
+//@EnableKafka
 public class PullStockPriceConsumer {
 
-    final private String KAFKA_LISTEN_TO_TOPIC = "PullStockPriceEvent";
+//    final private String KAFKA_LISTEN_TO_TOPIC = "PullStockPriceEvent";
 
-    @KafkaListener(topics = KAFKA_LISTEN_TO_TOPIC)
+//    @KafkaListener(topics = KAFKA_LISTEN_TO_TOPIC)
     public void listenToKafka(String data) {
         final IEXTradingClient iexTradingClient = IEXTradingClient.create();
         final Quote quote = iexTradingClient.executeRequest(new QuoteRequestBuilder()
