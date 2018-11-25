@@ -1,19 +1,16 @@
 package app.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonRootName;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class OpenFigiResponse {
-    @JsonProperty("ticker")
-    private String ticker;
+    @JsonProperty("data")
+    private Data[] data;
 
-    public String getTicker() {
-        return ticker;
+    public Data[] getData() {
+        return data;
     }
 
-    public void setTicker(String ticker) {
-        this.ticker = ticker;
+    public void setData(Data[] data) {
+        this.data = data;
     }
 }

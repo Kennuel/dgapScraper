@@ -7,6 +7,9 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
+import pl.zankowski.iextrading4j.api.stocks.Quote;
+import pl.zankowski.iextrading4j.client.IEXTradingClient;
+import pl.zankowski.iextrading4j.client.rest.request.stocks.QuoteRequestBuilder;
 
 @SpringBootApplication
 public class StockProcessorMicroservice implements ApplicationRunner {
@@ -14,12 +17,8 @@ public class StockProcessorMicroservice implements ApplicationRunner {
         SpringApplication.run(StockProcessorMicroservice.class, args);
     }
 
-    //Todo: This can be removed only test purposes
-    // I already found out how to map a symbol to a free API; it seems that DGAP.de only gives WKNs or ISIN
-    // Either we need to find from isin/wkn to symbol or find another possibilty; Maybe also scraping this data from a website
-
     @Override
-    public void run(ApplicationArguments arg0) throws Exception {
+    public void run(ApplicationArguments arg0) {
         final String uri = "https://api.openfigi.com/v1/mapping";
 
         HttpHeaders httpHeaders = new HttpHeaders();
@@ -34,14 +33,19 @@ public class StockProcessorMicroservice implements ApplicationRunner {
         HttpEntity<String> request = new HttpEntity<>(requestBody, httpHeaders);
 
         RestTemplate restTemplate = new RestTemplate();
-        HttpEntity<String> response = restTemplate.postForEntity(uri, request, String.class);
+        try {
+            HttpEntity<OpenFigiResponse[]> responseList = restTemplate.postForEntity(uri, request,
+                    OpenFigiResponse[].class);
+            String ticker = responseList.getBody()[0].getData()[0].getTicker();
 
-        System.out.println(response.getBody());
+            final IEXTradingClient iexTradingClient = IEXTradingClient.create();
+            final Quote quote = iexTradingClient.executeRequest(new QuoteRequestBuilder()
+                    .withSymbol(ticker)
+                    .build());
+            System.out.println(quote);
+        } catch (Exception e) {
+            System.out.println("Could not find an item for the requested ISIN");
+        }
 
-//        final IEXTradingClient iexTradingClient = IEXTradingClient.create();
-//        final Quote quote = iexTradingClient.executeRequest(new QuoteRequestBuilder()
-//                .withSymbol(response.getBody().getTicker())
-//                .build());
-//        System.out.println(quote);
     }
 }
