@@ -5,7 +5,7 @@ const config = {
 }
 
 let getSingleCompanyInfos = async () => {
-    const browser = await puppeteer.launch({ headless: false, devtools: true});
+    const browser = await puppeteer.launch({ headless: true, devtools: false});
     const page = await browser.newPage();
     await page.goto(config.baseUrl);
     let company = await fetchLatestCompany(page);
