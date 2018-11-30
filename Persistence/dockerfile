@@ -1,0 +1,14 @@
+FROM postgres:9.3-alpine
+
+ADD target/persistence-0.0.1.jar persistence.jar
+
+ENV POSTGRES_DB scraper
+ENV POSTGRES_USER scraper
+ENV POSTGRES_PASSWORD password
+
+EXPOSE 8080:8080
+
+RUN apk add --no-cache bash
+RUN apk add openjdk8
+
+ENTRYPOINT ["java", "-jar","/persistence.jar"]
