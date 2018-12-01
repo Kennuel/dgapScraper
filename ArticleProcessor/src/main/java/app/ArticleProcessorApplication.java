@@ -12,7 +12,7 @@ public class ArticleProcessorApplication {
         SpringApplication.run(ArticleProcessorApplication.class, args);
     }
 
-    //Todo: This can be removed only test purposes
+    //TODO: This can be removed only test purposes
     @Bean
     public ApplicationRunner runner(PullStockPriceProducer producer) {
         return (args) -> {

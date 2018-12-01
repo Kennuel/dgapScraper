@@ -21,10 +21,12 @@ services:
       - kafkanet
     environment:
       SPRING_KAFKA_BOOTSTRAP_SERVERS: kafkaserver:9092
+      ADVERTISED_PORT: 1337
     depends_on:
        - kafkaserver
     ports:
       - 2000:2000
+      - 1337:1337
     links:
       - kafkaserver:kafkaserver
       

@@ -7,5 +7,11 @@ ARG JAR_FILE=target/ArticleProcessor-0.1.0.jar
 # Add the application's jar to the container
 ADD ${JAR_FILE} ArticleProcessor.jar
 
+# For remote debugging
+EXPOSE 1337
+
+# Allow remote debugging: taken from here https://github.com/elemental-source/java-docker-compose-remote-debug/blob/master/docker/Dockerfile
+ENV JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=1337"
+
 # Run the jar file 
-ENTRYPOINT ["java","-Xmx400m", "-Xms400m","-jar","/ArticleProcessor.jar"]
+ENTRYPOINT ["java","-Xdebug", "-Xmx400m", "-Xms400m","-jar","/ArticleProcessor.jar"]

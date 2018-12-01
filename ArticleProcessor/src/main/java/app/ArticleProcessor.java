@@ -8,7 +8,8 @@ import org.springframework.stereotype.Component;
 @EnableKafka
 public class ArticleProcessor {
 
-    final private String TOPIC = "PullStockPriceEvent";
+    // TODO revert to old value just changed for easy testing
+    final private String TOPIC = "PullStockPriceEvent1";
 
     @KafkaListener(topics = TOPIC)
     public void processMessage(String data) {
