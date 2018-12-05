@@ -3,10 +3,7 @@ package com.scraper.persistence.controller;
 import com.scraper.persistence.model.Stock;
 import com.scraper.persistence.repository.StockRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.Objects;
 
@@ -27,6 +24,15 @@ public class StockController {
             return null;
         } else {
             return stock;
+        }
+    }
+
+    @RequestMapping(value = "/save", method = RequestMethod.POST, consumes = "application/json")
+    public void save(@RequestBody Stock stock) {
+        if (Objects.isNull(stock.getIsin()) && Objects.isNull(stock.getSymbol())) {
+            System.out.println("Not able to save stock - isin: " + stock.getIsin() + ", symbol: " + stock.getSymbol());
+        } else {
+            stockRepository.save(stock);
         }
     }
 }

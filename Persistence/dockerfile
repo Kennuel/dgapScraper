@@ -1,12 +1,8 @@
-FROM postgres:9.3-alpine
+FROM openjdk:8-jdk-alpine
+
+ENV DATABASE_HOST 172.17.0.2
+ENV DATABASE_PORT 5432
 
 ADD target/persistence-0.0.1.jar persistence.jar
 
-ENV POSTGRES_DB scraper
-ENV POSTGRES_USER scraper
-ENV POSTGRES_PASSWORD password
-
-RUN apk add --no-cache bash
-RUN apk add openjdk8
-
-# CMD ["java", "-jar", "/persistence.jar"]
+ENTRYPOINT ["java", "-jar", "persistence.jar"]
