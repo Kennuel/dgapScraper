@@ -42,6 +42,35 @@ services:
     links:
       - kafkaserver:kafkaserver
       
+  persistence:
+    image: persistence
+    container_name: persistence
+    networks:
+      - kafkanet
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafkaserver:9092
+      DATABASE_HOST: database # 172.17.0.2
+      DATABASE_PORT: 5432
+    ports:
+      - 2002:2002
+    depends_on:
+      - kafkaserver
+      - database
+
+  database:
+    image: database
+    container_name: database
+    networks:
+      - kafkanet
+    environment:
+      POSTGRES_DB: scraper
+      POSTGRES_USER: scraper
+      POSTGRES_PASSWORD: password
+    ports:
+      - 5432:5432
+    depends_on:
+      - kafkaserver
+
 networks:
   kafkanet:
     driver: bridge
