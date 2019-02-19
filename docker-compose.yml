@@ -27,6 +27,20 @@ services:
       - 2000:2000
     links:
       - kafkaserver:kafkaserver
+
+  stockprocessor:
+    image: stockprocessor
+    container_name: stockprocessor
+    networks:
+      - kafkanet
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafkaserver:9092
+    depends_on:
+       - kafkaserver
+    ports:
+      - 2001:2001
+    links:
+      - kafkaserver:kafkaserver
       
   persistence:
     image: persistence
