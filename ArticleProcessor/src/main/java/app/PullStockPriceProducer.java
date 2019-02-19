@@ -10,14 +10,14 @@ public class PullStockPriceProducer {
 
     private final KafkaTemplate<String, String> kafkaTemplate;
 
-    final private String TOPIC = "PullStockPriceEvent";
+    final private String KAFKA_SEND_TO_TOPIC = "PullStockPriceEvent";
 
     PullStockPriceProducer(KafkaTemplate<String, String> kafkaTemplate) {
         this.kafkaTemplate = kafkaTemplate;
     }
 
     public void send(String message) {
-        this.kafkaTemplate.send(TOPIC, message);
-        System.out.print("Message send\n");
+        this.kafkaTemplate.send(KAFKA_SEND_TO_TOPIC, message);
+        System.out.println("Send message to Topic: " + KAFKA_SEND_TO_TOPIC);
     }
 }
