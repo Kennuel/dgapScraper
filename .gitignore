@@ -3,3 +3,8 @@ news.json
 *.idea*
 *target*
 **.iml
+*.classpath
+*.project
+*.settings
+*bin*
+*.metadata
