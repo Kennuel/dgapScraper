@@ -14,7 +14,7 @@ If the ```-rebuild``` options is empty or none only ```docker-compose down``` an
 | buildAllAndRun.ps1 -rebuild none              | nothing will be rebuild                       |
 | buildAllAndRun.ps1 -rebuild articleprocessor  | only the article processor will be rebuild    |
 
-## Manual Steps to be automated
+## Manual Steps if liked
 To run the scraper, you need to have docker, docker-compose and maven installed.
 Further you need to build the following .jar artifacts via maven with:
 
