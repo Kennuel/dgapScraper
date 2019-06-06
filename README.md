@@ -8,6 +8,9 @@ If the ```-rebuild``` option is missing all containers will be new created.
 
 If the ```-rebuild``` options is empty or none only ```docker-compose down``` and ```docker-compose up``` will be run sequentally.
 
+### Example Options 
+The Last command works with all mircoservices
+
 | Command                                       | Action                                        |
 |-----------------------------------------------|-----------------------------------------------|
 | buildAllAndRun.ps1                            | Everything will be rebuild                    |
