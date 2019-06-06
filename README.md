@@ -27,7 +27,7 @@ in the following folders:
 
 You need to build all Node Modules for the SingleScraper via:
 
-````npm install``
+````npm install```
 
 inside:
 
