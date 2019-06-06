@@ -1,10 +1,10 @@
 # dgapScraper
 ## Running and Building
-To Start the Docker Compose run the _buildAllAndRun.ps1_ File inside Powershell.
-It Automates all building and running of the docker commands.
+To Start the Docker Compose run the _buildAllAndRun.ps1_ File inside powershell.
+It automates all building and running of the docker commands.
 
 via the flag ```-rebuild``` you can choose which docker container should be rebuild.
-If the ```-rebuild``` option is missing all containers will be new created.
+If the ```-rebuild``` option is missing all containers will be new build.
 
 If the ```-rebuild``` options is empty or none only ```docker-compose down``` and ```docker-compose up``` will be run sequentally.
 
