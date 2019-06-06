@@ -4,8 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class StockProcessorMicroservice {
+public class ArticleProcessor {
+
     public static void main(String[] args) {
-        SpringApplication.run(StockProcessorMicroservice.class, args);
+        SpringApplication.run(ArticleProcessor.class, args);
     }
+
 }

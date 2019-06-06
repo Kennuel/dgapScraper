@@ -1,4 +1,5 @@
 node_modules/
+*.vscode*
 news.json
 *.idea*
 *target*

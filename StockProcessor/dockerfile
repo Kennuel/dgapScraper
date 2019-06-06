@@ -1,6 +1,9 @@
 # Start with a base image containing Java runtime
 FROM openjdk:8-jdk-alpine
 
+ENV DATABASE_HOST 172.17.0.2
+ENV DATABASE_PORT 5432
+
 # The application's jar file
 ARG JAR_FILE=target/StockProcessor-0.1.0.jar
 
