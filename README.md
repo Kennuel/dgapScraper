@@ -1,9 +1,11 @@
 # dgapScraper
+This projects intends to gather financial news about companies together with its impact on their corresponding stock course.
+
 ## Running and Building
-To Start the Docker Compose run the _buildAllAndRun.ps1_ File inside powershell.
+To start the Docker Compose run the _buildAllAndRun.ps1_ File inside powershell.
 It automates all building and running of the docker commands.
 
-via the flag ```-rebuild``` you can choose which docker container should be rebuild.
+via the flag ```-rebuild``` you can choose which docker container should be rebuild from the sources.
 If the ```-rebuild``` option is missing all containers will be new build.
 
 If the ```-rebuild``` option is empty or none only ```docker-compose down``` and ```docker-compose up``` will be run sequentially.
