@@ -47,6 +47,7 @@ services:
       - 2001:2001
     links:
       - kafkaserver:kafkaserver
+      - stockscraper:stockscraper
         
   database:
     image: database
@@ -76,6 +77,22 @@ services:
       - 2003:2003
     links:
       - kafkaserver:kafkaserver
+
+  stockscraper:
+    image: stockscraper
+    container_name: stockscraper
+    networks:
+      - kafkanet
+    environment:
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafkaserver:9092
+    depends_on:
+       - kafkaserver
+       - database
+    ports:
+      - 3000:3000
+    environment:
+      ADVERTISED_HOST: stockscraper
+      ADVERTISED_PORT: 3000
 
 networks:
   kafkanet:

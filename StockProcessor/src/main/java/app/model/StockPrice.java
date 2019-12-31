@@ -14,6 +14,7 @@ public class StockPrice {
     @Id
     Date id;
     
+    @Id
     Date date;
 
     BigDecimal amount;

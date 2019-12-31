@@ -30,4 +30,11 @@ If ($rebuild -eq "" -or $rebuild -eq "singleScraper") {
     cd ..
 }
 
+If ($rebuild -eq "" -or $rebuild -eq "stockScraper") {
+    cd .\stockScraper
+    npm install
+    docker build -t stockscraper .
+    cd ..
+}
+
 docker-compose up
