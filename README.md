@@ -1,12 +1,17 @@
 # dgapScraper
+This projects intends to gather financial news about companies together with its impact on their corresponding stock course.
+
 ## Running and Building
-To Start the Docker Compose run the _buildAllAndRun.ps1_ File inside Powershell.
-It Automates all building and running of the docker commands.
+To start the Docker Compose run the _buildAllAndRun.ps1_ File inside powershell.
+It automates all building and running of the docker commands.
 
-via the flag ```-rebuild``` you can choose which docker container should be rebuild.
-If the ```-rebuild``` option is missing all containers will be new created.
+via the flag ```-rebuild``` you can choose which docker container should be rebuild from the sources.
+If the ```-rebuild``` option is missing all containers will be new build.
 
-If the ```-rebuild``` options is empty or none only ```docker-compose down``` and ```docker-compose up``` will be run sequentally.
+If the ```-rebuild``` option is empty or none only ```docker-compose down``` and ```docker-compose up``` will be run sequentially.
+
+### Example Options 
+The Last command works with all mircoservices
 
 | Command                                       | Action                                        |
 |-----------------------------------------------|-----------------------------------------------|
@@ -14,7 +19,7 @@ If the ```-rebuild``` options is empty or none only ```docker-compose down``` an
 | buildAllAndRun.ps1 -rebuild none              | nothing will be rebuild                       |
 | buildAllAndRun.ps1 -rebuild articleprocessor  | only the article processor will be rebuild    |
 
-## Manual Steps to be automated
+## Manual Steps if liked
 To run the scraper, you need to have docker, docker-compose and maven installed.
 Further you need to build the following .jar artifacts via maven with:
 
@@ -27,7 +32,7 @@ in the following folders:
 
 You need to build all Node Modules for the SingleScraper via:
 
-````npm install``
+```npm install```
 
 inside:
 
