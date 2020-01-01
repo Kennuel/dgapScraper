@@ -1,4 +1,6 @@
-﻿docker-compose down
+﻿#!/bin/bash
+
+docker-compose down
 
 if ["$0" == "articleprocessor"] || ["$0" == ""]
     then
