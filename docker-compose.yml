@@ -52,6 +52,7 @@ services:
   database:
     image: database
     container_name: database
+    hostname: database
     networks:
       - kafkanet
     environment:
@@ -59,9 +60,12 @@ services:
       POSTGRES_USER: scraper
       POSTGRES_PASSWORD: password
     ports:
-      - 5432:5432
+      - "5445:5432"
     depends_on:
       - kafkaserver
+    volumes:
+      - my-vol:/var/lib/postgresql/data
+    restart: unless-stopped
 
   singlescraper:
     image: singlescraper
@@ -97,3 +101,6 @@ services:
 networks:
   kafkanet:
     driver: bridge
+
+volumes:
+  my-vol:

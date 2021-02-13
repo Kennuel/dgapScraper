@@ -23,14 +23,8 @@ public class PullStockPriceConsumer {
 
     final private String KAFKA_LISTEN_TO_TOPIC = "PULL_STOCK_PRICE_FOR_ISIN";
     
-
-    private StockRepository stockRepository;
-
     @Autowired
-    PullStockPriceConsumer(StockRepository stockRepository) {
-        this.stockRepository = stockRepository;
-    }
-    
+    private StockRepository stockRepository;
 
     @KafkaListener(topics = KAFKA_LISTEN_TO_TOPIC, groupId= "1",  containerFactory = "kafkaListenerContainerFactory")
     public void listenToKafka(PullStockPriceRQ data) {
@@ -46,14 +40,15 @@ public class PullStockPriceConsumer {
             System.out.println("Start PullingStockPrice!");
             HttpEntity<StockScraperRS> response = restTemplate.getForEntity(uri, StockScraperRS.class);
         
-            System.out.println(response.getBody().getData());
+            System.out.println("PulledPrice PullingStockPrice! " + response.getBody().getData());
             StockPrice myStock =  new StockPrice();
-            myStock.setId(data.getArticleId());
+            myStock.setArticleDate(data.getArticleId());
             myStock.setAmount(new BigDecimal(response.getBody().getData()));
             myStock.setDate(new Date());
             stockRepository.save(myStock);
 
         } catch (Exception e) {
+
             System.out.println("********************************************************");
             System.out.println("ISIN: " + data.getIsin());
             System.out.println("Could not find an item for the requested ISIN");

@@ -3,30 +3,30 @@ package app.model;
 import java.math.BigDecimal;
 import java.util.Date;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table
 public class StockPrice {
-    
+
     @Id
-    Date id;
-    
-    @Id
+    @GeneratedValue(strategy= GenerationType.AUTO)
+    private Long id;
+
+    Date articleDate;
+
     Date date;
 
     BigDecimal amount;
 
     public StockPrice() {}
     
-    public Date getId() {
-        return id;
+    public Date getArticleDate() {
+        return articleDate;
     }
 
-    public void setId(Date id) {
-        this.id = id;
+    public void setArticleDate(Date articleDate) {
+        this.articleDate = articleDate;
     }
 
     public Date getDate() {
