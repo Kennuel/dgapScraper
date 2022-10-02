@@ -20,7 +20,7 @@
   },
   "homepage": "https://github.com/Kennuel/dgapCrawler#readme",
   "dependencies": {
-    "kafka-node": "^2.4.1",
+    "kafka-node": "^5.0.0",
     "puppeteer": "^1.14.0"
   }
 }
